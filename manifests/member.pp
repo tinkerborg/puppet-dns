@@ -1,7 +1,7 @@
-# == Class dns::member
+# == Class bind_dns::member
 #
-define dns::member ($domain, $hostname, $ipaddress) {
-  dns::record::a { $hostname:
+define bind_dns::member ($domain, $hostname, $ipaddress) {
+  bind_dns::record::a { $hostname:
     zone => $domain,
     data => $ipaddress,
     ptr  => true;

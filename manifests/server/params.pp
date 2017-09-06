@@ -1,6 +1,6 @@
-# == Class dns::server::params
+# == Class bind_dns::server::params
 #
-class dns::server::params {
+class bind_dns::server::params {
   case $::osfamily {
     'Debian': {
       $cfg_dir            = '/etc/bind'
@@ -51,7 +51,7 @@ class dns::server::params {
       }
     }
     default: {
-      fail("dns::server is incompatible with this osfamily: ${::osfamily}")
+      fail("bind_dns::server is incompatible with this osfamily: ${::osfamily}")
     }
   }
   $ensure_packages = latest

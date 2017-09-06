@@ -1,9 +1,9 @@
-# == Class dns::server
+# == Class bind_dns::server
 #
-class dns::server::install (
-  $necessary_packages = $dns::server::params::necessary_packages,
-  $ensure_packages    = $dns::server::params::ensure_packages,
-) inherits dns::server::params {
+class bind_dns::server::install (
+  $necessary_packages = $bind_dns::server::params::necessary_packages,
+  $ensure_packages    = $bind_dns::server::params::ensure_packages,
+) inherits bind_dns::server::params {
 
   package { $necessary_packages :
     ensure => $ensure_packages,

@@ -1,6 +1,6 @@
-# == Define dns::zone
+# == Define bind_dns::zone
 #
-# `dns::zone` defines a DNS zone and creates both the zone entry
+# `bind_dns::zone` defines a DNS zone and creates both the zone entry
 # in the `named.conf` files and the standardized zone file header
 # to which the zone records will be added.
 #
@@ -15,7 +15,7 @@
 #
 # === FQDN Values
 #
-# The `dns::zone` type will append the final `.` dot to any value which
+# The `bind_dns::zone` type will append the final `.` dot to any value which
 # is listed in the *Parameters* section as an *FQDN* (Fully Qualified
 # Domain Name).  This has two implications:  First, any FQDN must *not*
 # include the trailing `.` dot; second, any parameter listed as an FQDN
@@ -163,7 +163,7 @@
 #   *allow_forwarder* and *forward_policy* to be set).
 #   Defaults to `master`.
 #
-define dns::zone (
+define bind_dns::zone (
   $soa = $::fqdn,
   $soa_email = "root.${::fqdn}",
   $zone_ttl = '604800',
@@ -184,12 +184,12 @@ define dns::zone (
   $zone_notify = undef,
   $also_notify = [],
   $ensure = present,
-  $data_dir = $::dns::server::params::data_dir,
+  $data_dir = $::bind_dns::server::params::data_dir,
   $view = undef,
   $default_zone = false,
 ) {
 
-  $cfg_dir = $dns::server::params::cfg_dir
+  $cfg_dir = $bind_dns::server::params::cfg_dir
 
   validate_array($allow_transfer)
   validate_array($allow_forwarder)
@@ -247,11 +247,11 @@ define dns::zone (
 
     # Create "fake" zone file without zone-serial
     concat { $zone_file_stage:
-      owner   => $dns::server::params::owner,
-      group   => $dns::server::params::group,
+      owner   => $bind_dns::server::params::owner,
+      group   => $bind_dns::server::params::group,
       mode    => '0644',
       replace => $zone_replace,
-      require => Class['dns::server'],
+      require => Class['bind_dns::server'],
       notify  => Exec["bump-${zone}-serial"]
     }
     concat::fragment{"db.${name}.soa":
@@ -273,10 +273,10 @@ define dns::zone (
       path        => ['/bin', '/sbin', '/usr/bin', '/usr/sbin'],
       refreshonly => true,
       provider    => posix,
-      user        => $dns::server::params::owner,
-      group       => $dns::server::params::group,
-      require     => Class['dns::server::install'],
-      notify      => Class['dns::server::service'],
+      user        => $bind_dns::server::params::owner,
+      group       => $bind_dns::server::params::group,
+      require     => Class['bind_dns::server::install'],
+      notify      => Class['bind_dns::server::service'],
     }
   } else {
     # For any zone file that is not a master zone, we should make sure
@@ -288,7 +288,7 @@ define dns::zone (
 
   # Include Zone in named.conf.local or view file
   $target = $default_zone ? {
-    true    => $dns::server::params::rfc1912_zones_cfg,
+    true    => $bind_dns::server::params::rfc1912_zones_cfg,
     default => $view ? {
       undef =>  "${cfg_dir}/named.conf.local",
       '' =>  "${cfg_dir}/named.conf.local",

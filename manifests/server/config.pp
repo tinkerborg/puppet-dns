@@ -1,13 +1,13 @@
-# == Class dns::server
+# == Class bind_dns::server
 #
-class dns::server::config (
-  $cfg_dir              = $dns::server::params::cfg_dir,
-  $cfg_file             = $dns::server::params::cfg_file,
-  $data_dir             = $dns::server::params::data_dir,
-  $owner                = $dns::server::params::owner,
-  $group                = $dns::server::params::group,
+class bind_dns::server::config (
+  $cfg_dir              = $bind_dns::server::params::cfg_dir,
+  $cfg_file             = $bind_dns::server::params::cfg_file,
+  $data_dir             = $bind_dns::server::params::data_dir,
+  $owner                = $bind_dns::server::params::owner,
+  $group                = $bind_dns::server::params::group,
   $enable_default_zones = true,
-) inherits dns::server::params {
+) inherits bind_dns::server::params {
 
   file { $cfg_dir:
     ensure => directory,
@@ -38,16 +38,16 @@ class dns::server::config (
     content => template("${module_name}/named.conf.erb"),
     require => [
       File[$cfg_dir],
-      Class['dns::server::install']
+      Class['bind_dns::server::install']
     ],
-    notify  => Class['dns::server::service'],
+    notify  => Class['bind_dns::server::service'],
   }
 
   concat { "${cfg_dir}/named.conf.local":
     owner  => $owner,
     group  => $group,
     mode   => '0644',
-    notify => Class['dns::server::service']
+    notify => Class['bind_dns::server::service']
   }
 
   concat::fragment{'named.conf.local.header':
@@ -57,20 +57,20 @@ class dns::server::config (
   }
 
   # Configure default zones with a concat so we could add more zones in it
-  concat {$dns::server::params::rfc1912_zones_cfg:
+  concat {$bind_dns::server::params::rfc1912_zones_cfg:
     owner          => $owner,
     group          => $group,
     mode           => '0644',
     ensure_newline => true,
-    notify         => Class['dns::server::service'],
+    notify         => Class['bind_dns::server::service'],
   }
 
   concat::fragment {'default-zones.header':
-    target => $dns::server::params::rfc1912_zones_cfg,
+    target => $bind_dns::server::params::rfc1912_zones_cfg,
     order  => '00',
     source => "puppet:///modules/${module_name}/named.conf.default-zones",
   }
 
-  include dns::server::default
+  include bind_dns::server::default
 
 }

@@ -1,9 +1,9 @@
-# == Define dns::server::view
+# == Define bind_dns::server::view
 #
-# `dns::server::view` defines a DNS view.
+# `bind_dns::server::view` defines a DNS view.
 #
 # Zones to the view could be added by using the `zones` parameter of
-# `dns::server::view` or by declaring `dns::zone` resources with its `view`
+# `bind_dns::server::view` or by declaring `bind_dns::zone` resources with its `view`
 # parameter set to this resource name.
 #
 # === Parameters
@@ -43,7 +43,7 @@
 #   Hash of zones resources that should be included in this view.
 #   Defaults to empty (no zone is added).
 #
-define dns::server::view (
+define bind_dns::server::view (
   $ensure               = 'present',
   $enable_default_zones = true,
   $match_clients        = [],
@@ -54,7 +54,7 @@ define dns::server::view (
   $viewname             = $name,
   $zones                = {},
 ) {
-  include ::dns::server::params
+  include ::bind_dns::server::params
 
   $valid_ensure = ['present', 'absent']
   $valid_yes_no = ['yes', 'no']
@@ -74,39 +74,39 @@ define dns::server::view (
   validate_string($viewname)
   validate_hash($zones)
 
-  $rfc1912_zones_cfg = $dns::server::params::rfc1912_zones_cfg
+  $rfc1912_zones_cfg = $bind_dns::server::params::rfc1912_zones_cfg
 
-  concat { "${dns::server::params::cfg_dir}/view-${name}.conf":
+  concat { "${bind_dns::server::params::cfg_dir}/view-${name}.conf":
     ensure         => $ensure,
-    owner          => $dns::server::params::owner,
-    group          => $dns::server::params::group,
+    owner          => $bind_dns::server::params::owner,
+    group          => $bind_dns::server::params::group,
     mode           => '0644',
     ensure_newline => true,
-    notify         => Class['dns::server::service'],
+    notify         => Class['bind_dns::server::service'],
   }
 
   if $ensure == 'present' {
     concat::fragment {"view-${name}.header":
-      target  => "${dns::server::params::cfg_dir}/view-${name}.conf",
+      target  => "${bind_dns::server::params::cfg_dir}/view-${name}.conf",
       order   =>  '00',
       content => template("${module_name}/view.erb"),
     }
 
     concat::fragment {"view-${name}.tail":
-      target  => "${dns::server::params::cfg_dir}/view-${name}.conf",
+      target  => "${bind_dns::server::params::cfg_dir}/view-${name}.conf",
       order   => '99',
       content => '}; ',
     }
 
     # Include view configuration in main config
     concat::fragment {"named.conf.local.view.${name}.include":
-      target  => "${dns::server::params::cfg_dir}/named.conf.local",
+      target  => "${bind_dns::server::params::cfg_dir}/named.conf.local",
       order   => $order,
-      content => "include \"${dns::server::params::cfg_dir}/view-${name}.conf\";\n",
-      require => Concat["${dns::server::params::cfg_dir}/view-${name}.conf"],
+      content => "include \"${bind_dns::server::params::cfg_dir}/view-${name}.conf\";\n",
+      require => Concat["${bind_dns::server::params::cfg_dir}/view-${name}.conf"],
     }
 
     # Create zone config
-    create_resources(dns::zone, $zones, { view => $name })
+    create_resources(bind_dns::zone, $zones, { view => $name })
   }
 }

@@ -11,13 +11,13 @@
 #
 # Usage:
 #
-# dns::tsig { 'ns3':
+# bind_dns::tsig { 'ns3':
 #   ensure => present,
 #   algorithm => "hmac-md5"
 #   secret    => "dTIxGBPjkT/8b6BYHTUA=="
 # }
 #
-define dns::tsig (
+define bind_dns::tsig (
   $keyname   = $name,
   $algorithm = 'hmac-md5',
   $server    = undef,
@@ -25,7 +25,7 @@ define dns::tsig (
   $ensure    = present
 ) {
 
-  $cfg_dir   = $dns::server::params::cfg_dir # Used in a template
+  $cfg_dir   = $bind_dns::server::params::cfg_dir # Used in a template
   validate_string($name)
 
   concat::fragment { "named.conf.local.tsig.${name}.include":

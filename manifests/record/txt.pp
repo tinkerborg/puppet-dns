@@ -1,6 +1,6 @@
-# == Define dns::record::txt
+# == Define bind_dns::record::txt
 #
-# Wrapper for dns::record for TXT records
+# Wrapper for bind_dns::record for TXT records
 #
 # === Parameters
 #
@@ -32,7 +32,7 @@
 #
 # === Examples
 #
-#     dns::record::txt { 'txt1':
+#     bind_dns::record::txt { 'txt1':
 #         zone => 'example.com',
 #         data => 'this is a test record',
 #     }
@@ -43,7 +43,7 @@
 #
 # ---
 #
-#     dns::record::txt { 'txt2':
+#     bind_dns::record::txt { 'txt2':
 #         zone => 'example.com',
 #         data => 'this is "another" test record',
 #     }
@@ -54,7 +54,7 @@
 #
 # ---
 #
-#     dns::record::txt { 'txt3.example.com':
+#     bind_dns::record::txt { 'txt3.example.com':
 #         zone => 'example.com',
 #         data => 'this is a' + ' very'*60 + ' long test record',
 #         host => 'txt3',
@@ -65,17 +65,17 @@
 #     txt3            IN      TXT     "this is a very very very...very " "very very...very long test record"
 #
 
-define dns::record::txt (
+define bind_dns::record::txt (
   $zone,
   $data,
   $ttl = '',
   $host = $name,
-  $data_dir = $::dns::server::config::data_dir,
+  $data_dir = $::bind_dns::server::config::data_dir,
 ) {
 
   $alias = "${name},TXT,${zone}"
 
-  dns::record { $alias:
+  bind_dns::record { $alias:
     zone     => $zone,
     host     => $host,
     ttl      => $ttl,

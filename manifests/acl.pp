@@ -9,23 +9,23 @@
 #
 # Usage:
 #
-# dns::acl { 'trusted':
+# bind_dns::acl { 'trusted':
 #   ensure => present,
 #   data   => [ '10.0.0.0/8', '172.16.2.0/24', ]
 # }
 #
-define dns::acl (
+define bind_dns::acl (
   $ensure = present,
   $aclname = $name,
   $data = [],
 ) {
-  include dns::server::params
+  include bind_dns::server::params
 
   validate_string($aclname)
   validate_array($data)
 
   concat::fragment { "named.conf.local.acl.${name}.include":
-    target  => "${dns::server::params::cfg_dir}/named.conf.local",
+    target  => "${bind_dns::server::params::cfg_dir}/named.conf.local",
     order   => 2,
     content => template("${module_name}/acl.erb"),
   }

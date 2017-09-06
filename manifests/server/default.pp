@@ -1,9 +1,9 @@
-# == Class: dns::server::default
+# == Class: bind_dns::server::default
 #
-class dns::server::default (
+class bind_dns::server::default (
 
-  $default_file          = $dns::server::params::default_file,
-  $default_template      = $dns::server::params::default_template,
+  $default_file          = $bind_dns::server::params::default_file,
+  $default_template      = $bind_dns::server::params::default_template,
 
   $resolvconf            = undef,
   $options               = undef,
@@ -14,7 +14,7 @@ class dns::server::default (
   $keytab_file           = undef,
   $disable_zone_checking = undef,
 
-) inherits dns::server::params {
+) inherits bind_dns::server::params {
 
   validate_absolute_path( $default_file )
 
@@ -44,12 +44,12 @@ class dns::server::default (
 
   file { $default_file:
     ensure  => present,
-    owner   => $::dns::server::params::owner,
-    group   => $::dns::server::params::group,
+    owner   => $::bind_dns::server::params::owner,
+    group   => $::bind_dns::server::params::group,
     mode    => '0644',
     content => template("${module_name}/${default_template}"),
-    notify  => Class['dns::server::service'],
-    require => Package[$::dns::server::params::necessary_packages]
+    notify  => Class['bind_dns::server::service'],
+    require => Package[$::bind_dns::server::params::necessary_packages]
   }
 
 }

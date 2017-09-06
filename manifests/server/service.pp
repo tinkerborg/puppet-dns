@@ -1,15 +1,15 @@
-# == Class dns::server::service
+# == Class bind_dns::server::service
 #
-class dns::server::service (
-  $service = $dns::server::params::service
-) inherits dns::server::params {
+class bind_dns::server::service (
+  $service = $bind_dns::server::params::service
+) inherits bind_dns::server::params {
 
   service { $service:
     ensure     => running,
     hasstatus  => true,
     hasrestart => true,
     enable     => true,
-    require    => Class['dns::server::config']
+    require    => Class['bind_dns::server::config']
   }
 
 }

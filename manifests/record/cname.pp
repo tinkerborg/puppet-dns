@@ -1,13 +1,13 @@
-# == Define dns::record::dname
+# == Define bind_dns::record::dname
 #
-# Wrapper for dns::record to set a CNAME
+# Wrapper for bind_dns::record to set a CNAME
 #
-define dns::record::cname (
+define bind_dns::record::cname (
   $zone,
   $data,
   $ttl = '',
   $host = $name,
-  $data_dir = $::dns::server::config::data_dir,
+  $data_dir = $::bind_dns::server::config::data_dir,
 ) {
 
   $alias = "${name},CNAME,${zone}"
@@ -18,7 +18,7 @@ define dns::record::cname (
     default => "${data}."
   }
 
-  dns::record { $alias:
+  bind_dns::record { $alias:
     zone     => $zone,
     host     => $host,
     ttl      => $ttl,

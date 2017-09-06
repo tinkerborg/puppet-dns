@@ -1,5 +1,5 @@
 {
-  "name": "ajjahn-dns",
+  "name": "ajjahn-bind_dns",
   "version": "2.1.1",
   "author": "Adam Jahn",
   "summary": "Module for provisioning DNS (bind9)",

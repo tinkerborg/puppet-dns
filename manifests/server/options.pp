@@ -1,4 +1,4 @@
-# == Define: dns::server::options
+# == Define: bind_dns::server::options
 #
 # BIND server template-based configuration definition.
 #
@@ -150,12 +150,12 @@
 #
 # === Examples
 #
-#  dns::server::options { '/etc/bind/named.conf.options':
+#  bind_dns::server::options { '/etc/bind/named.conf.options':
 #    forwarders => [ '8.8.8.8', '8.8.4.4' ],
 #   }
 #
-include dns::server::params
-define dns::server::options (
+include bind_dns::server::params
+define bind_dns::server::options (
   $allow_query = [],
   $allow_recursion = [],
   $also_notify = [],
@@ -165,9 +165,9 @@ define dns::server::options (
   $control_channel_ip = undef,
   $control_channel_port = undef,
   $control_channel_allow = undef,
-  $data_dir = $::dns::server::params::data_dir,
-  $dnssec_validation = $::dns::server::params::default_dnssec_validation,
-  $dnssec_enable = $::dns::server::params::default_dnssec_enable,
+  $data_dir = $::bind_dns::server::params::data_dir,
+  $dnssec_validation = $::bind_dns::server::params::default_dnssec_validation,
+  $dnssec_enable = $::bind_dns::server::params::default_dnssec_enable,
   $forward_policy = undef,
   $forwarders = [],
   $listen_on = [],
@@ -183,16 +183,16 @@ define dns::server::options (
   $statistic_channel_allow = undef,
   $transfers = [],
   $transfer_source = undef,
-  $working_dir = $::dns::server::params::working_dir,
+  $working_dir = $::bind_dns::server::params::working_dir,
   $zone_notify = undef,
   $extra_options = {},
 ) {
   $valid_check_names = ['fail', 'warn', 'ignore']
   $valid_forward_policy = ['first', 'only']
-  $cfg_dir = $::dns::server::params::cfg_dir
+  $cfg_dir = $::bind_dns::server::params::cfg_dir
 
-  if ! defined(Class['::dns::server']) {
-    fail('You must include the ::dns::server base class before using any dns options defined resources')
+  if ! defined(Class['::bind_dns::server']) {
+    fail('You must include the ::bind_dns::server base class before using any dns options defined resources')
   }
 
   validate_string($forward_policy)
@@ -277,12 +277,12 @@ define dns::server::options (
 
   file { $title:
     ensure  => present,
-    owner   => $::dns::server::params::owner,
-    group   => $::dns::server::params::group,
+    owner   => $::bind_dns::server::params::owner,
+    group   => $::bind_dns::server::params::group,
     mode    => '0644',
-    require => [File[$cfg_dir], Class['::dns::server::install']],
+    require => [File[$cfg_dir], Class['::bind_dns::server::install']],
     content => template("${module_name}/named.conf.options.erb"),
-    notify  => Class['dns::server::service'],
+    notify  => Class['bind_dns::server::service'],
   }
 
 }

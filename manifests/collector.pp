@@ -1,9 +1,9 @@
-#== Class dns::collector
+#== Class bind_dns::collector
 #
 # ?
-class dns::collector {
+class bind_dns::collector {
   Dns::Member <<| |>> {
-    require => Class['dns::server'],
-    notify  => Class['dns::server::service']
+    require => Class['bind_dns::server'],
+    notify  => Class['bind_dns::server::service']
   }
 }

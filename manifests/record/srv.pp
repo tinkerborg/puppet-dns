@@ -1,8 +1,8 @@
-# == Define dns::server:srv
+# == Define bind_dns::server:srv
 #
-# Wrapper for dns::zone to set SRV records
+# Wrapper for bind_dns::zone to set SRV records
 #
-define dns::record::srv (
+define bind_dns::record::srv (
   $zone,
   $service,
   $pri,
@@ -11,14 +11,14 @@ define dns::record::srv (
   $target,
   $proto = 'tcp',
   $ttl = '',
-  $data_dir = $::dns::server::config::data_dir,
+  $data_dir = $::bind_dns::server::config::data_dir,
 ) {
 
   $alias = "${service}:${proto}@${target}:${port},${pri},${weight},SRV,${zone}"
 
   $host = "_${service}._${proto}.${zone}."
 
-  dns::record { $alias:
+  bind_dns::record { $alias:
     zone     => $zone,
     host     => $host,
     ttl      => $ttl,

@@ -1,6 +1,6 @@
-# == Definition: dns::record::ptr::by_ip
+# == Definition: bind_dns::record::ptr::by_ip
 #
-# This type is defined to allow the dns::record::a resource type to
+# This type is defined to allow the bind_dns::record::a resource type to
 # use pre-4.x 'iteration' to create reverse ptr records for hosts with
 # multiple ip addresses.
 #
@@ -26,13 +26,13 @@
 #
 # === Actions
 #
-# Reformats the $ip, $host, $zone parameters to create a `dns::record::ptr` 
+# Reformats the $ip, $host, $zone parameters to create a `bind_dns::record::ptr` 
 # resource
 #
 # === Examples
 #
 # @example
-#     dns::record::ptr::by_ip { '192.168.128.42':
+#     bind_dns::record::ptr::by_ip { '192.168.128.42':
 #       host => 'server',
 #       zone => 'example.com',
 #     }
@@ -40,7 +40,7 @@
 # turns into:
 #
 # @example
-#     dns::record::ptr { '42.128.168.192.IN-ADDR.ARPA':
+#     bind_dns::record::ptr { '42.128.168.192.IN-ADDR.ARPA':
 #       host => '42',
 #       zone => '128.168.192.IN-ADDR.ARPA',
 #       data => 'server.example.com',
@@ -48,37 +48,37 @@
 #
 # ---
 # @example
-#     dns::record::ptr::by_ip { [ '192.168.128.68', '192.168.128.69', '192.168.128.70' ]:
+#     bind_dns::record::ptr::by_ip { [ '192.168.128.68', '192.168.128.69', '192.168.128.70' ]:
 #       host => 'multihomed-server.example.com',
 #     }
 #
 # turns into:
 #
 # @example
-#     dns::record::ptr { '68.128.168.192.IN-ADDR.ARPA':
+#     bind_dns::record::ptr { '68.128.168.192.IN-ADDR.ARPA':
 #       host => '68',
 #       zone => '128.168.192.IN-ADDR.ARPA',
 #       data => 'multihomed-server.example.com',
 #
 # @example
-#     dns::record::ptr { '69.128.168.192.IN-ADDR.ARPA':
+#     bind_dns::record::ptr { '69.128.168.192.IN-ADDR.ARPA':
 #       host => '69',
 #       zone => '128.168.192.IN-ADDR.ARPA',
 #       data => 'multihomed-server.example.com',
 #
 # @example
-#     dns::record::ptr { '70.128.168.192.IN-ADDR.ARPA':
+#     bind_dns::record::ptr { '70.128.168.192.IN-ADDR.ARPA':
 #       host => '70',
 #       zone => '128.168.192.IN-ADDR.ARPA',
 #       data => 'multihomed-server.example.com',
 #     }
 
-define dns::record::ptr::by_ip (
+define bind_dns::record::ptr::by_ip (
   $host,
   $zone = undef,
   $ttl = undef,
   $ip = $name,
-  $data_dir = $::dns::server::config::data_dir,
+  $data_dir = $::bind_dns::server::config::data_dir,
 ) {
 
   # split the IP address up into three host/zone pairs based on class A, B, or C splits:
@@ -119,7 +119,7 @@ define dns::record::ptr::by_ip (
     $fqdn = $host
   }
 
-  dns::record::ptr { "${octet}.${reverse_zone}":
+  bind_dns::record::ptr { "${octet}.${reverse_zone}":
     host     => $octet,
     zone     => $reverse_zone,
     ttl      => $ttl,

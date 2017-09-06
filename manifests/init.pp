@@ -2,8 +2,8 @@
 #
 # Currently does nothing
 #
-class dns {
-  # include dns::install
-  # include dns::config
-  # include dns::service
+class bind_dns {
+  # include bind_dns::install
+  # include bind_dns::config
+  # include bind_dns::service
 }

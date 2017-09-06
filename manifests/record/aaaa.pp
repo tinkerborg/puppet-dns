@@ -1,18 +1,18 @@
-# == Define: dns::record::aaaa
+# == Define: bind_dns::record::aaaa
 #
-# Wrapper of dns::record to set AAAA records
+# Wrapper of bind_dns::record to set AAAA records
 #
-define dns::record::aaaa (
+define bind_dns::record::aaaa (
   $zone,
   $data,
   $ttl = '',
   $host = $name,
-  $data_dir = $::dns::server::config::data_dir,
+  $data_dir = $::bind_dns::server::config::data_dir,
 ) {
 
   $alias = "${name},AAAA,${zone}"
 
-  dns::record { $alias:
+  bind_dns::record { $alias:
     zone     => $zone,
     host     => $host,
     ttl      => $ttl,
